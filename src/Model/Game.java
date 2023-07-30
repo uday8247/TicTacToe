@@ -4,6 +4,7 @@ import Strategies.WinningStrategies.WinningStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
+import Model.*;
 
 public class Game {
     Board board;
@@ -28,6 +29,7 @@ public class Game {
     public static Builder getBuilder(){
         return new Builder();
     }
+
     public static class Builder{
         //1.players
         //2.dimension
@@ -67,28 +69,48 @@ public class Game {
             return new Game(dimension,players,winningStrategies);
         }
     }
-    public void makeMove(){
-        Player currentPlayer=players.get(currentPlayerIndex);
-        System.out.printf("Player turn: %s ",currentPlayer.getName());
 
-        Move move=currentPlayer.makeMove(board);
-        moves.add(move);
 
-        //update the board with the rol and col
-        int row=move.getCell().getRow();
-        int col=move.getCell().getCol();
-
-        this.board.getBoard().get(row).set(col,move.getCell());
-        for(WinningStrategy winningStrategy:winningStrategies){
-            if(winningStrategy.checkWinner(board,move)){
-                System.out.printf("The player %s has won\n",currentPlayer.getName());
-                gameState=GameState.WIN;
-                break;
-            }
-        }
-
-        currentPlayerIndex= (currentPlayerIndex+1)%players.size();
-        this.board.display();
+    public Board getBoard(){
+        return board;
     }
 
+    public GameState getGameState(){
+        return gameState;
+    }
+
+    public Player getCurrentPlayer(){
+        return players.get(currentPlayerIndex);
+    }
+
+    public void addMove(Move move){
+        moves.add(move);
+    }
+
+    public List<WinningStrategy> getWinningStrategies() {
+        return winningStrategies;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner=winner;
+    }
+
+    public void setGameState(GameState gameState){
+        this.gameState=gameState;
+    }
+
+    public void nextPlayerTurn(){
+        currentPlayerIndex=(currentPlayerIndex+1)%players.size();
+    }
+    public void updateBoard(Move move) {
+        // Update the board with the move taken.
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        // Updating the cell in the board with the move that player took.
+        this.board.getBoard().get(row).set(col, move.getCell());
+    }
+    public Player getWinner() {
+        return winner;
+    }
 }

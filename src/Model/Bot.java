@@ -7,9 +7,9 @@ import java.util.Scanner;
 
 public class Bot extends Player{
 
-    public Bot(String name, char symbol, int id, PlayerType playertype, BotDifficultyLevel botDifficultyLevel,
+    public Bot(String name, char symbol, int id, BotDifficultyLevel botDifficultyLevel,
                 Scanner scanner) {
-        super(name, symbol, id, playertype,scanner);
+        super(name, symbol, id, PlayerType.BOT,scanner);
         this.botDifficultyLevel = botDifficultyLevel;
         this.botPlayingStrategy= BotPlayingStrategyFactory.getBotPlayingStrategy(botDifficultyLevel);
     }
@@ -22,6 +22,11 @@ public class Bot extends Player{
 
 
         Move move= botPlayingStrategy.suggestMove(board);
+
+        //Null pointer exception
+        if(move==null){
+            return null;
+        }
         System.out.printf("The bot is making a move %d,%d\n",move.getCell().getRow(),move.getCell().getCol());
 
         move.getCell().setPlayer(this);
